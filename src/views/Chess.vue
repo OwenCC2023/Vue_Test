@@ -29,6 +29,7 @@ const selectedSquare = ref<[number, number] | null>(null)
 const validMoves = ref<[number, number][]>([])
 const isWhiteTurn = ref(true)
 const moveHistory = ref<string[]>([])
+const enPassantTarget = ref<[number, number] | null>(null)
 
 const gameStatus = computed(() => {
   const inCheck = isKingInCheck(board.value, isWhiteTurn.value)
@@ -81,11 +82,21 @@ const resetBoard = () => {
   validMoves.value = []
   isWhiteTurn.value = true
   moveHistory.value = []
+  enPassantTarget.value = null
 }
 
 const makeMove = (fromRow: number, fromCol: number, toRow: number, toCol: number) => {
   const piece = board.value[fromRow][fromCol]
-  const captured = board.value[toRow][toCol]
+  let captured = board.value[toRow][toCol]
+
+  // Handle en passant capture
+  if (piece && piece.toLowerCase() === 'p' && !captured && enPassantTarget.value &&
+      enPassantTarget.value[0] === toRow && enPassantTarget.value[1] === toCol) {
+    // Remove the captured pawn (it's on the en passant target row, same column as destination)
+    const capturedRow = fromRow
+    captured = board.value[capturedRow][toCol]
+    board.value[capturedRow][toCol] = null
+  }
 
   // Handle pawn promotion
   if (piece && piece.toLowerCase() === 'p') {
@@ -99,6 +110,14 @@ const makeMove = (fromRow: number, fromCol: number, toRow: number, toCol: number
   } else {
     board.value[toRow][toCol] = piece
     board.value[fromRow][fromCol] = null
+  }
+
+  // Set en passant target for next move if pawn moved 2 squares
+  if (piece && piece.toLowerCase() === 'p' && Math.abs(toRow - fromRow) === 2) {
+    // The en passant target is the square the pawn jumped over
+    enPassantTarget.value = [(fromRow + toRow) / 2, toCol]
+  } else {
+    enPassantTarget.value = null
   }
 
   // Record move
@@ -127,7 +146,7 @@ const selectSquare = (row: number, col: number) => {
   const piece = board.value[row][col]
   if (piece && getPieceColor(piece) === (isWhiteTurn.value ? 'white' : 'black')) {
     selectedSquare.value = [row, col]
-    validMoves.value = getLegalMoves(row, col, board.value, isWhiteTurn.value)
+    validMoves.value = getLegalMoves(row, col, board.value, isWhiteTurn.value, enPassantTarget.value)
   } else {
     selectedSquare.value = null
     validMoves.value = []

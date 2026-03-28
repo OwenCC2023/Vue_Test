@@ -252,7 +252,7 @@ export const isSquareUnderAttack = (
       if (!piece) continue
 
       const color = getPieceColor(piece)
-      if (color === (byWhite ? 'white' : 'black')) continue // Wrong color
+      if (color !== (byWhite ? 'white' : 'black')) continue // Wrong color
 
       const pieceLower = piece.toLowerCase()
       let canAttack = false
