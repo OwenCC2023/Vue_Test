@@ -1,42 +1,18 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
-  </header>
+  <v-app>
+    <v-app-bar color="primary" dark>
+      <v-app-bar-title>Vue Test App</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <v-btn to="/" variant="text">Home</v-btn>
+      <v-btn to="/about" variant="text">About</v-btn>
+    </v-app-bar>
 
-  <main>
-    <RouterView />
-  </main>
+    <v-main>
+      <RouterView />
+    </v-main>
+  </v-app>
 </template>
-
-<style scoped>
-header {
-  padding: 2rem;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-nav {
-  display: flex;
-  gap: 2rem;
-}
-
-a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-a.router-link-active {
-  color: #42b983;
-}
-
-main {
-  padding: 2rem;
-}
-</style>

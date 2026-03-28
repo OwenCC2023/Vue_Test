@@ -10,18 +10,29 @@ const decrement = () => store.dispatch('decrement')
 </script>
 
 <template>
-  <div class="home">
-    <h1>Home</h1>
-    <p>Count: {{ count }}</p>
-    <button @click="increment">Increment</button>
-    <button @click="decrement">Decrement</button>
-  </div>
+  <v-container class="pa-4">
+    <v-card>
+      <v-card-title>Home</v-card-title>
+      <v-card-text>
+        <v-row class="mt-2">
+          <v-col cols="12">
+            <p class="text-h6">Counter: {{ count }}</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-btn color="success" @click="increment" block>
+              Increment
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-btn color="error" @click="decrement" block>
+              Decrement
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
-<style scoped>
-button {
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-</style>
