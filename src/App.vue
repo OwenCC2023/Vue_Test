@@ -15,6 +15,10 @@ import { RouterView } from 'vue-router'
       </v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn to="/" variant="text" class="text-white" size="large">Home</v-btn>
+      <v-btn to="/chess" variant="text" class="text-white" size="large">
+        <v-icon class="mr-1">mdi-chess-board</v-icon>
+        Chess
+      </v-btn>
       <v-btn to="/about" variant="text" class="text-white" size="large">About</v-btn>
     </v-app-bar>
 
