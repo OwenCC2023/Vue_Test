@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -7,6 +7,26 @@ const count = computed(() => store.getters.count)
 
 const increment = () => store.dispatch('increment')
 const decrement = () => store.dispatch('decrement')
+
+const textInput = ref('')
+const notes = ref<string[]>([])
+
+const addNote = () => {
+  if (textInput.value.trim()) {
+    notes.value.push(textInput.value)
+    textInput.value = ''
+  }
+}
+
+const removeNote = (index: number) => {
+  notes.value.splice(index, 1)
+}
+
+const handleKeyPress = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    addNote()
+  }
+}
 </script>
 
 <template>
@@ -45,7 +65,7 @@ const decrement = () => store.dispatch('decrement')
         </v-card>
 
         <!-- Counter Card -->
-        <v-card class="elevation-8" style="border-radius: 16px;">
+        <v-card class="mb-6 elevation-8" style="border-radius: 16px;">
           <div class="gradient-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 2rem; border-radius: 16px 16px 0 0;">
             <v-card-title class="text-white text-h5 font-weight-bold">
               <v-icon class="mr-2">mdi-counter</v-icon>
@@ -89,6 +109,75 @@ const decrement = () => store.dispatch('decrement')
             </div>
           </v-card-text>
         </v-card>
+
+        <!-- Text Input Card -->
+        <v-card class="elevation-8" style="border-radius: 16px;">
+          <div class="gradient-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 16px 16px 0 0;">
+            <v-card-title class="text-white text-h5 font-weight-bold">
+              <v-icon class="mr-2">mdi-pencil-box</v-icon>
+              Notes
+            </v-card-title>
+          </div>
+          <v-card-text class="pa-6">
+            <v-row class="mb-4">
+              <v-col cols="12">
+                <v-text-field
+                  v-model="textInput"
+                  @keypress="handleKeyPress"
+                  label="Type something..."
+                  placeholder="Enter your note and press Enter"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-pencil"
+                  clearable
+                  class="rounded-field"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-btn
+              @click="addNote"
+              color="info"
+              block
+              size="large"
+              class="rounded-lg mb-4"
+            >
+              <v-icon class="mr-2">mdi-plus</v-icon>
+              Add Note
+            </v-btn>
+
+            <!-- Notes List -->
+            <div v-if="notes.length > 0">
+              <v-divider class="mb-4"></v-divider>
+              <p class="text-subtitle2 font-weight-bold mb-3">Your Notes ({{ notes.length }})</p>
+              <v-list class="pa-0">
+                <v-list-item
+                  v-for="(note, index) in notes"
+                  :key="index"
+                  class="mb-2 rounded-lg pa-3"
+                  style="background: #f5f5f5; border-left: 4px solid #4facfe;"
+                >
+                  <v-list-item-title>{{ note }}</v-list-item-title>
+                  <template v-slot:append>
+                    <v-btn
+                      @click="removeNote(index)"
+                      icon="mdi-delete"
+                      variant="text"
+                      color="error"
+                      size="small"
+                    ></v-btn>
+                  </template>
+                </v-list-item>
+              </v-list>
+            </div>
+
+            <v-empty-state
+              v-else
+              title="No notes yet"
+              text="Start typing and add your first note!"
+              icon="mdi-note-multiple"
+              class="mt-4"
+            ></v-empty-state>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -111,6 +200,10 @@ const decrement = () => store.dispatch('decrement')
 }
 
 .rounded-lg {
+  border-radius: 12px !important;
+}
+
+:deep(.rounded-field .v-field) {
   border-radius: 12px !important;
 }
 </style>
